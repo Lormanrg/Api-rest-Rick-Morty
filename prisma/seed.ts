@@ -1,46 +1,29 @@
-// prisma/seed.ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from '../src/app.module'; // Ajusta la ruta según tu estructura
+import { PrismaService } from '../src/prisma/prisma.service';
+import { RickMortyService } from '../src/rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
+import { CharactersService } from '../src/characters/characters.service'; // Ajusta la ruta según tu estructura
 
-import { PrismaClient } from '@prisma/client';
+async function bootstrap() {
+  const app = await NestFactory.createApplicationContext(AppModule);
+  const prismaService = app.get(PrismaService);
+  const rickMortyService = app.get(RickMortyService);
+  const characterService = app.get(CharactersService);
 
-// initialize Prisma Client
-const prisma = new PrismaClient();
+  try {
+    // Paso 1: Obtener los datos de la API
+    const characters = await rickMortyService.fetchAllCharacters();
 
-async function main() {
-  // create two dummy articles
-  const post1 = await prisma.article.upsert({
-    where: { title: 'Prisma Adds Support for MongoDB' },
-    update: {},
-    create: {
-      title: 'Prisma Adds Support for MongoDB',
-      body: 'Support for MongoDB has been one of the most requested features since the initial release of...',
-      description:
-        "We are excited to share that today's Prisma ORM release adds stable support for MongoDB!",
-      published: false,
-    },
-  });
+    // Paso 2: Guardar los datos en la base de datos
+    await characterService.saveAllCharacters(characters);
 
-  const post2 = await prisma.article.upsert({
-    where: { title: "What's new in Prisma? (Q1/22)" },
-    update: {},
-    create: {
-      title: "What's new in Prisma? (Q1/22)",
-      body: 'Our engineers have been working hard, issuing new releases with many improvements...',
-      description:
-        'Learn about everything in the Prisma ecosystem and community from January to March 2022.',
-      published: true,
-    },
-  });
-
-  console.log({ post1, post2 });
+    console.log('Characters seeded successfully');
+  } catch (error) {
+    console.error('Error seeding characters:', error);
+  } finally {
+    await prismaService.$disconnect();
+    await app.close();
+  }
 }
 
-// execute the main function
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    // close Prisma Client at the end
-    await prisma.$disconnect();
-  });
+bootstrap();

@@ -1,7 +1,13 @@
 // src/prisma/prisma.service.ts
 
-import { INestApplication, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-export class PrismaService extends PrismaClient {}
+export class PrismaService extends PrismaClient {
+  constructor() {
+    super();
+  }
+}

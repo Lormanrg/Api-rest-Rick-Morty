@@ -14,13 +14,12 @@ datasource db {
 }
 
 // prisma/schema.prisma
+//Tabla para personajes
 
-model Article {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
-  description String?
-  body        String
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Character {
+  id      Int    @id @default(autoincrement())
+  name    String
+  status  String
+  species String
+  gender  String
 }
