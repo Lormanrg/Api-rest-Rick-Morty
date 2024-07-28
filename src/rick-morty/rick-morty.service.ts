@@ -32,4 +32,27 @@ export class RickMortyService {
     }
     return allCharacters;
   }
+
+  async storeAllCharacters(): Promise<void> {
+    const characters = await this.fetchAllCharacters();
+
+    for (const character of characters) {
+      await this.prismaService.character.upsert({
+        where: { id: character.id },
+        update: {
+          name: character.name,
+          status: character.status,
+          species: character.species,
+          gender: character.gender,
+        },
+        create: {
+          id: character.id,
+          name: character.name,
+          status: character.status,
+          species: character.species,
+          gender: character.gender,
+        },
+      });
+    }
+  }
 }
