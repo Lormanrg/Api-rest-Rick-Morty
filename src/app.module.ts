@@ -5,14 +5,18 @@ import { RickMortyService } from './rick-morty/rick-morty.service';
 import { CharactersService } from '../src/characters/characters.service';
 import { CharactersModule } from './characters/characters.module';
 import { RickMortyModule } from './rick-morty/rick-morty.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    HttpModule, // Necesario para usar HttpService
-    PrismaModule, // Módulo que proporciona PrismaService
-    CharactersModule, // Módulo que contiene CharacterService
-    RickMortyModule, // Módulo que contiene RickMortyService
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    CharactersModule,
+    RickMortyModule,
+    PrismaModule,
+    HttpModule,
   ],
-  providers: [],
+  providers: [RickMortyService, CharactersService],
 })
 export class AppModule {}

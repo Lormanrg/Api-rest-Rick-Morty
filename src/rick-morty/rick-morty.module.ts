@@ -6,7 +6,7 @@ import { CharactersService } from '../characters/characters.service'; // Asegúr
 
 @Module({
   imports: [HttpModule, PrismaModule],
-  providers: [RickMortyService, CharactersService],
+  providers: [RickMortyService],
   exports: [RickMortyService],
 })
 export class RickMortyModule {}

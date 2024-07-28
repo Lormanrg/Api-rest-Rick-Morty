@@ -16,16 +16,14 @@ export class RickMortyService {
 
   async fetchAllCharacters(): Promise<Character[]> {
     let allCharacters = [];
-    let url = `${this.baseUrl}character`;
+    let url = `${this.baseUrl}/character`;
     try {
-      while (url) {
-        const response = this.httpService.get(url);
+      const response = this.httpService.get(url);
 
-        const { data } = await lastValueFrom(response);
+      const { data } = await lastValueFrom(response);
 
-        allCharacters = allCharacters.concat(data.results);
-        url = data.info.next; // Para obtener la siguiente pagina
-      }
+      allCharacters = allCharacters.concat(data.results);
+      url = data.info.next; // Para obtener la siguiente pagina
     } catch (error) {
       console.error('Error fetching characters', error);
       throw new InternalServerErrorException(
