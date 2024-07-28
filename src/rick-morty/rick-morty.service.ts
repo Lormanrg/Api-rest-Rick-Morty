@@ -11,7 +11,7 @@ export class RickMortyService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly prismaService: PrismaService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async *getAllCharacterPages(url: string): AsyncGenerator<any> {
@@ -37,31 +37,34 @@ export class RickMortyService {
         'Error fetching characters from Rick and Morty API',
       );
     }
-
-    console.log(allCharacters);
     return allCharacters;
+  }
+
+  async saveAllCharacters(characters: any[]): Promise<void> {
+    try {
+      const charactersData = characters.map((character) => ({
+        name: character.name ?? 'Unknown',
+        status: character.status ?? 'Unknown',
+        species: character.species ?? 'Unknown',
+        gender: character.gender ?? 'Unknown',
+      }));
+      console.log(charactersData);
+
+      await this.prisma.character.createMany({
+        data: charactersData,
+        skipDuplicates: true,
+      });
+    } catch (error) {
+      console.error('Error saving characters', error);
+      throw new InternalServerErrorException(
+        'Error saving characters to database',
+      );
+    }
   }
 
   async storeAllCharacters(): Promise<any> {
     const characters = await this.fetchAllCharacters();
 
-    for await (const character of characters) {
-      await this.prismaService.character.upsert({
-        where: { id: character.id },
-        update: {
-          name: character.name,
-          status: character.status,
-          species: character.species,
-          gender: character.gender,
-        },
-        create: {
-          id: character.id,
-          name: character.name,
-          status: character.status,
-          species: character.species,
-          gender: character.gender,
-        },
-      });
-    }
+    console.log(characters);
   }
 }

@@ -5,31 +5,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RickMortyService } from 'src/rick-morty/rick-morty.service';
 import { response } from 'express';
 import { Character } from '@prisma/client';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class CharactersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async saveAllCharacters(characters: any[]): Promise<void> {
-    try {
-      const charactersData = characters.map((characters) => ({
-        name: characters.name,
-        status: characters.status,
-        species: characters.species,
-        gender: characters.gender,
-      }));
-
-      await this.prisma.character.createMany({
-        data: charactersData,
-        skipDuplicates: true,
-      });
-    } catch (error) {
-      console.error('Error saving characters', error);
-      throw new InternalServerErrorException(
-        'Error saving characters to database',
-      );
-    }
-  }
   findAll() {
     return `This action returns all characters`;
   }

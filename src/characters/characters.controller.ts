@@ -12,7 +12,7 @@ export class CharacterController {
   @Get('migrate')
   async migrateCharacters() {
     const characters = await this.rickMortyService.storeAllCharacters();
-    await this.characterService.saveAllCharacters(characters);
+    await this.rickMortyService.saveAllCharacters(characters);
     return { message: 'Characters migrated successfully' };
   }
 }

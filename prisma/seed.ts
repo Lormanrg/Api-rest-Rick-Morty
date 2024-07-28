@@ -15,7 +15,7 @@ async function bootstrap() {
     const characters = await rickMortyService.fetchAllCharacters();
 
     // Paso 2: Guardar los datos en la base de datos
-    await characterService.saveAllCharacters(characters);
+    await rickMortyService.saveAllCharacters(characters);
 
     console.log('Characters seeded successfully');
   } catch (error) {
