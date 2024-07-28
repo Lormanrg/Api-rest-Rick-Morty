@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { RickMortyService } from '../rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
 import { CharactersService } from '../characters/characters.service'; // Ajusta la ruta según tu estructura
 
@@ -9,9 +9,9 @@ export class CharacterController {
     private readonly characterService: CharactersService,
   ) {}
 
-  @Post('migrate')
+  @Get('migrate')
   async migrateCharacters() {
-    const characters = await this.rickMortyService.fetchAllCharacters();
+    const characters = await this.rickMortyService.storeAllCharacters();
     await this.characterService.saveAllCharacters(characters);
     return { message: 'Characters migrated successfully' };
   }

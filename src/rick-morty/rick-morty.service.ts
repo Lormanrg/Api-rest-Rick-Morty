@@ -14,29 +14,38 @@ export class RickMortyService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async fetchAllCharacters(): Promise<Character[]> {
-    let allCharacters = [];
-    let url = `${this.baseUrl}/character`;
-    try {
-      const response = this.httpService.get(url);
-
+  async *getAllCharacterPages(url: string): AsyncGenerator<any> {
+    while (url) {
+      const response = await this.httpService.get(url);
       const { data } = await lastValueFrom(response);
 
-      allCharacters = allCharacters.concat(data.results);
-      url = data.info.next; // Para obtener la siguiente pagina
+      yield data.results;
+      url = data.info.next;
+    }
+  }
+
+  async fetchAllCharacters(): Promise<any[]> {
+    let allCharacters: any[] = [];
+    let url = `${this.baseUrl}/character`;
+    try {
+      for await (const characters of this.getAllCharacterPages(url)) {
+        allCharacters = allCharacters.concat(characters);
+      }
     } catch (error) {
       console.error('Error fetching characters', error);
       throw new InternalServerErrorException(
         'Error fetching characters from Rick and Morty API',
       );
     }
+
+    console.log(allCharacters);
     return allCharacters;
   }
 
-  async storeAllCharacters(): Promise<void> {
+  async storeAllCharacters(): Promise<any> {
     const characters = await this.fetchAllCharacters();
 
-    for (const character of characters) {
+    for await (const character of characters) {
       await this.prismaService.character.upsert({
         where: { id: character.id },
         update: {

@@ -18,6 +18,7 @@ export class CharactersService {
         species: characters.species,
         gender: characters.gender,
       }));
+
       await this.prisma.character.createMany({
         data: charactersData,
         skipDuplicates: true,
