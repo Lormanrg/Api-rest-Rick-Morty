@@ -17,9 +17,12 @@ datasource db {
 //Tabla para personajes
 
 model Character {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   name    String
   status  String
   species String
   gender  String
+  type    String?
+
+  @@unique([name, species, status, type])
 }

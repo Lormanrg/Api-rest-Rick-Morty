@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../src/app.module'; // Ajusta la ruta según tu estructura
+import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { RickMortyService } from '../src/rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
-import { CharactersService } from '../src/characters/characters.service'; // Ajusta la ruta según tu estructura
+import { RickMortyService } from '../src/rick-morty/rick-morty.service';
+import { CharactersService } from '../src/characters/characters.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -12,10 +12,10 @@ async function bootstrap() {
 
   try {
     // Paso 1: Obtener los datos de la API
-    const characters = await rickMortyService.fetchAllCharacters();
+    await rickMortyService.fetchAllCharacters();
 
     // Paso 2: Guardar los datos en la base de datos
-    await rickMortyService.saveAllCharacters(characters);
+    await rickMortyService.storeAllCharacters();
 
     console.log('Characters seeded successfully');
   } catch (error) {

@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Character } from '@prisma/client';
+import { Character, Prisma } from '@prisma/client';
 import { promises } from 'dns';
 import { lastValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -40,31 +40,39 @@ export class RickMortyService {
     return allCharacters;
   }
 
-  async saveAllCharacters(characters: any[]): Promise<void> {
-    try {
-      const charactersData = characters.map((character) => ({
-        name: character.name ?? 'Unknown',
-        status: character.status ?? 'Unknown',
-        species: character.species ?? 'Unknown',
-        gender: character.gender ?? 'Unknown',
-      }));
-      console.log(charactersData);
-
-      await this.prisma.character.createMany({
-        data: charactersData,
-        skipDuplicates: true,
-      });
-    } catch (error) {
-      console.error('Error saving characters', error);
-      throw new InternalServerErrorException(
-        'Error saving characters to database',
-      );
-    }
-  }
-
-  async storeAllCharacters(): Promise<any> {
+  async storeAllCharacters(): Promise<void> {
     const characters = await this.fetchAllCharacters();
+    for await (const character of characters) {
+      try {
+        const existingCharacter = await this.prisma.character.findFirst({
+          where: {
+            name: character.name,
+            status: character.status,
+            species: character.species,
+            gender: character.gender,
+            type: character.type,
+          },
+        });
+        if (!existingCharacter) {
+          const charactersData: Prisma.CharacterCreateInput = {
+            name: character.name,
+            status: character.status,
+            species: character.species,
+            gender: character.gender,
+            type: character.type,
+          };
 
-    console.log(characters);
+          await this.prisma.character.create({
+            data: charactersData,
+          });
+        }
+      } catch (error) {
+        if (error.code === 'P2002') {
+          console.log(
+            `Character with id:${character.id}, name: ${character.name}, species:${character.species}, status: ${character.status}, type:${character.type}, and gender:${character.gender} already exists`,
+          );
+        }
+      }
+    }
   }
 }

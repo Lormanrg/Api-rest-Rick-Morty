@@ -1,6 +1,13 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { RickMortyService } from '../rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
 import { CharactersService } from '../characters/characters.service'; // Ajusta la ruta según tu estructura
+import { CreateCharacterDto } from './dto/create-character.dto';
 
 @Controller('characters')
 export class CharacterController {
@@ -9,13 +16,30 @@ export class CharacterController {
     private readonly characterService: CharactersService,
   ) {}
 
-  @Get('migrate')
-  async migrateCharacters() {
-    const characters = await this.rickMortyService.storeAllCharacters();
-    await this.rickMortyService.saveAllCharacters(characters);
-    return { message: 'Characters migrated successfully' };
+  @Post()
+  async create(@Body() createCharacterDto: CreateCharacterDto) {
+    try {
+      return this.characterService.create(createCharacterDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
+
+//   @Get('migrate')
+//   async migrateCharacters() {
+//     const characters = await this.rickMortyService.storeAllCharacters();
+//     // await this.characterService.saveAllCharacters(characters);
+//     return { message: 'Characters migrated successfully' };
+//   }
+// }
+//   @Get('migrate')
+//   async migrateCharacters() {
+//     const characters = await this.rickMortyService.storeAllCharacters();
+//     // await this.characterService.saveAllCharacters(characters);
+//     return { message: 'Characters migrated successfully' };
+//   }
+// }
 
 //   @Get(':id')
 //   findOne(@Param('id') id: string) {
