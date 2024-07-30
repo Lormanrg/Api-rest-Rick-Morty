@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RickMortyService } from '../rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
 import { CharactersService } from '../characters/characters.service'; // Ajusta la ruta según tu estructura
@@ -20,6 +21,18 @@ export class CharacterController {
   async create(@Body() createCharacterDto: CreateCharacterDto) {
     try {
       return this.characterService.create(createCharacterDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get()
+  async findCharactersBySpeciesAndTypes(
+    @Query('species') species?: string,
+    @Query('type') type?: string,
+  ) {
+    try {
+      return this.characterService.findAll(species, type);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

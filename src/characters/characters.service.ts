@@ -55,6 +55,10 @@ export class CharactersService {
     if (type) {
       where.type = type;
     }
+
+    return this.prisma.character.findMany({
+      where,
+    });
   }
 }
 

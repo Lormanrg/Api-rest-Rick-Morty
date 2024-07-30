@@ -21,7 +21,7 @@ import { RickMortyController } from './rick-morty/rick-morty.controller';
     HttpModule,
   ],
   controllers: [CharacterController, RickMortyController],
-  providers: [RickMortyService, PrismaService],
+  providers: [RickMortyService, PrismaService, CharactersService],
 })
 export class AppModule {
   // constructor(private readonly rickMortyService: RickMortyService) {}
