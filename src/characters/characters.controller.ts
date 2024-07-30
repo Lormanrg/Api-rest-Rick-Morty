@@ -30,9 +30,26 @@ export class CharacterController {
   async findCharactersBySpeciesAndTypes(
     @Query('species') species?: string,
     @Query('type') type?: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
   ) {
     try {
-      return this.characterService.findAll(species, type);
+      const pageNumber = Number(page) || 1;
+      const limitNumber = Number(limit) || 5;
+
+      if (pageNumber <= 0 || limitNumber <= 0) {
+        throw new BadRequestException(
+          'Pagina y limite debe ser numero positivo entero',
+        );
+      }
+
+      const result = this.characterService.findAllBySpeciesAndTypes(
+        species,
+        type,
+        pageNumber,
+        limitNumber,
+      );
+      return result;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

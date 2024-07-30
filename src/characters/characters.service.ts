@@ -46,7 +46,12 @@ export class CharactersService {
     }
   }
 
-  async findAll(species: string, type: string) {
+  async findAllBySpeciesAndTypes(
+    species: string,
+    type?: string,
+    page: number = 1,
+    limit: number = 5,
+  ) {
     const where: any = {};
     if (species) {
       where.species = species;
@@ -55,10 +60,25 @@ export class CharactersService {
     if (type) {
       where.type = type;
     }
+    const take = limit; //Número de elementos por página
+    const skip = (page - 1) * take; // Calcula cuántos elementos se deben saltar
 
-    return this.prisma.character.findMany({
+    const characters = await this.prisma.character.findMany({
+      where,
+      take,
+      skip,
+    });
+
+    const totalCharacters = await this.prisma.character.count({
       where,
     });
+
+    return {
+      data: characters,
+      total: totalCharacters,
+      page,
+      limit: take,
+    };
   }
 }
 
