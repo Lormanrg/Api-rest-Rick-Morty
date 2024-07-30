@@ -80,6 +80,46 @@ export class CharactersService {
       limit: take,
     };
   }
+
+  async update(id: number, updateCharacterDto: UpdateCharacterDto) {
+    try {
+      const { name, species, type } = updateCharacterDto;
+
+      const existingCharacter = await this.prisma.character.findFirst({
+        where: {
+          AND: [
+            { id: { not: id } },
+            {
+              OR: [
+                {
+                  name,
+                },
+                { species },
+                { type },
+              ],
+            },
+          ],
+        },
+      }); // método de actualización sirve para evitar duplicados en tu base de datos. Esta lógica asegura que no se pueda actualizar un personaje a un estado donde su nombre, especie o tipo ya existan en otro personaje.
+
+      if (existingCharacter) {
+        throw new BadRequestException(
+          'El personaje con el mismo nombre, especie o tipo ya existe',
+        );
+      }
+      return await this.prisma.character.update({
+        where: { id },
+        data: updateCharacterDto,
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(
+          'Character with this name already exists for the given species and status',
+        );
+      }
+      throw error;
+    }
+  }
 }
 
 //   async saveAllCharacters(characters: any[]): Promise<void> {

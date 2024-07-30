@@ -3,12 +3,15 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { RickMortyService } from '../rick-morty/rick-morty.service'; // Ajusta la ruta según tu estructura
 import { CharactersService } from '../characters/characters.service'; // Ajusta la ruta según tu estructura
 import { CreateCharacterDto } from './dto/create-character.dto';
+import { UpdateCharacterDto } from './dto/update-character.dto';
 
 @Controller('characters')
 export class CharacterController {
@@ -50,6 +53,18 @@ export class CharacterController {
         limitNumber,
       );
       return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() updateCharacterDto: UpdateCharacterDto,
+  ) {
+    try {
+      return this.characterService.update(Number(id), updateCharacterDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
