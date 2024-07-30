@@ -9,6 +9,10 @@ import { ConfigModule } from '@nestjs/config';
 import { CharacterController } from './characters/characters.controller';
 import { PrismaService } from './prisma/prisma.service';
 import { RickMortyController } from './rick-morty/rick-morty.controller';
+import { EpisodesModule } from './episodes/episodes.module';
+
+import { EpisodesService } from './episodes/episodes.service';
+import { EpisodesController } from './episodes/episodes.controller';
 
 @Module({
   imports: [
@@ -19,15 +23,14 @@ import { RickMortyController } from './rick-morty/rick-morty.controller';
     RickMortyModule,
     PrismaModule,
     HttpModule,
+    EpisodesModule,
   ],
-  controllers: [CharacterController, RickMortyController],
-  providers: [RickMortyService, PrismaService, CharactersService],
+  controllers: [CharacterController, RickMortyController, EpisodesController],
+  providers: [
+    RickMortyService,
+    PrismaService,
+    CharactersService,
+    EpisodesService,
+  ],
 })
-export class AppModule {
-  // constructor(private readonly rickMortyService: RickMortyService) {}
-  // async onModuleInit() {
-  //   {
-  //     await this.rickMortyService.storeAllCharacters();
-  //   }
-  // }
-}
+export class AppModule {}

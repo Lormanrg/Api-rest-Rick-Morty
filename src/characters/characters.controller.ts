@@ -70,37 +70,3 @@ export class CharacterController {
     }
   }
 }
-
-//   @Get('migrate')
-//   async migrateCharacters() {
-//     const characters = await this.rickMortyService.storeAllCharacters();
-//     // await this.characterService.saveAllCharacters(characters);
-//     return { message: 'Characters migrated successfully' };
-//   }
-// }
-//   @Get('migrate')
-//   async migrateCharacters() {
-//     const characters = await this.rickMortyService.storeAllCharacters();
-//     // await this.characterService.saveAllCharacters(characters);
-//     return { message: 'Characters migrated successfully' };
-//   }
-// }
-
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return this.rickMortyService.findOne(+id);
-//   }
-
-//   @Patch(':id')
-//   update(
-//     @Param('id') id: string,
-//     @Body() updateCharacterDto: UpdateCharacterDto,
-//   ) {
-//     return this.charactersService.update(+id, updateCharacterDto);
-//   }
-
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.charactersService.remove(+id);
-//   }
-// }

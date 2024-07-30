@@ -11,17 +11,14 @@ async function bootstrap() {
   const characterService = app.get(CharactersService);
 
   try {
-    // Paso 1: Obtener los datos de la API
-    await rickMortyService.fetchAllCharacters();
-
-    // Paso 2: Guardar los datos en la base de datos
-    await rickMortyService.storeAllCharacters();
-
-    console.log('Characters seeded successfully');
+    await Promise.all([
+      rickMortyService.fetchAndStoreCharacters(),
+      rickMortyService.fetchAndStoreEpisodes(),
+    ]);
+    console.log('Data stored successfully');
   } catch (error) {
-    console.error('Error seeding characters:', error);
+    console.error('Error fetching and storing data:', error);
   } finally {
-    await prismaService.$disconnect();
     await app.close();
   }
 }
