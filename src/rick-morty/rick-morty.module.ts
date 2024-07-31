@@ -5,8 +5,8 @@ import { RickMortyService } from './rick-morty.service';
 import { CharactersService } from '../characters/characters.service'; // Asegúrate de que el path sea correcto
 
 @Module({
-  imports: [HttpModule, PrismaModule],
-  providers: [RickMortyService, CharactersService],
+  imports: [HttpModule, PrismaModule, RickMortyModule],
+  providers: [RickMortyService],
   exports: [RickMortyService],
 })
 export class RickMortyModule {}
