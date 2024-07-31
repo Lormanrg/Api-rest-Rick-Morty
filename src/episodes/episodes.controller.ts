@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
   Query,
+  Put,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { EpisodesService } from './episodes.service';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
+import { UpdateCharacterDto } from 'src/characters/dto/update-character.dto';
 
 @Controller('episodes')
 export class EpisodesController {
@@ -30,6 +33,16 @@ export class EpisodesController {
     return this.episodesService.getEpisodesBySeason(season, page, pageSize);
   }
 
+  @Put(':id')
+  async updateByNameAndSeason(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCharacterDto: UpdateCharacterDto,
+  ) {
+    return await this.episodesService.updateEpisodeByNameAndSeason(
+      Number(id),
+      updateCharacterDto,
+    );
+  }
   // @Get()
   // findAll() {
   //   return this.episodesService.findAll();

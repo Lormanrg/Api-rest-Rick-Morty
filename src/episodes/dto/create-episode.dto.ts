@@ -16,11 +16,11 @@ export class CreateEpisodeDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  characters: string[];
+  characters?: string[];
   @IsOptional()
   @IsInt()
   season: number;
   @IsNotEmpty()
   @IsInt()
-  episodeNumber: number;
+  episodeNumber?: number;
 }

@@ -1,7 +1,13 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateEpisodeDto } from './dto/update-episode.dto';
+import { error } from 'console';
 
 @Injectable()
 export class EpisodesService {
@@ -76,6 +82,57 @@ export class EpisodesService {
       throw new Error(`Error fetching episodes: ${error.message}`);
     }
   }
+  async updateEpisodeByNameAndSeason(
+    id: number,
+    updateEpisodeDto: UpdateEpisodeDto,
+  ) {
+    const { characters, name, season, ...updateData } = updateEpisodeDto;
+
+    //Verificar si el episodio existe
+    const existingEpisode = await this.prisma.episode.findFirst({
+      where: { id },
+    });
+
+    if (!existingEpisode) {
+      throw new NotFoundException(`Episode with ID ${id}`);
+    }
+
+    //Valida nombre y la temporada
+    if (name && season !== undefined) {
+      const existingConflict = await this.prisma.episode.findFirst({
+        where: {
+          name,
+          season,
+          NOT: { id }, //Excluye el episodio actual de busqueda
+        },
+      });
+
+      if (existingConflict) {
+        throw new ConflictException(
+          `Episode with name ${name} ya existe en temporada ${season}`,
+        );
+      }
+    }
+    //Transformamos characters en formato prisma esperado
+    const transformedCharactesrs = characters
+      ? { set: characters.map((id) => ({ id: Number(id) })) }
+      : undefined;
+
+    //Realizamos actualización
+
+    try {
+      return await this.prisma.episode.update({
+        where: { id },
+        data: {
+          name,
+          season,
+          ...updateData,
+          characters: transformedCharactesrs,
+        },
+      });
+    } catch (error) {}
+  }
+
   // findAll() {
   //   return `This action returns all episodes`;
   // }
