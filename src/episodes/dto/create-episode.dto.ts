@@ -2,7 +2,6 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -22,5 +21,6 @@ export class CreateEpisodeDto {
   @IsInt()
   season: number;
   @IsNotEmpty()
+  @IsInt()
   episodeNumber: number;
 }
