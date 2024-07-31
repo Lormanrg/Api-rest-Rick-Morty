@@ -41,7 +41,41 @@ export class EpisodesService {
       throw new error(`Error creating episode:${error.message}`);
     }
   }
+  async getEpisodesBySeason(
+    season?: string,
+    page: number = 0,
+    pageSize: number = 5,
+  ) {
+    const seasonNumber = season ? parseInt(season, 10) : undefined;
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
 
+    // Configura el filtro de temporada si se proporciona
+    const where = season ? { season: seasonNumber } : {};
+
+    try {
+      const episodes = await this.prisma.episode.findMany({
+        where: {
+          season: seasonNumber,
+        },
+        skip,
+        take,
+        orderBy: { air_date: 'desc' }, // Ordena por fecha de emisión
+      });
+
+      const totalCount = await this.prisma.episode.count({ where });
+
+      return {
+        totalCount,
+        episodes,
+        page,
+        pageSize,
+        totalPages: Math.ceil(totalCount / pageSize),
+      };
+    } catch (error) {
+      throw new Error(`Error fetching episodes: ${error.message}`);
+    }
+  }
   // findAll() {
   //   return `This action returns all episodes`;
   // }

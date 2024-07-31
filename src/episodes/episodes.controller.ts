@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { EpisodesService } from './episodes.service';
@@ -18,6 +19,15 @@ export class EpisodesController {
   @Post()
   create(@Body() createEpisodeDto: CreateEpisodeDto) {
     return this.episodesService.create(createEpisodeDto);
+  }
+
+  @Get()
+  async getAll(
+    @Query('season') season?: string,
+    @Query('page') page: number = 1,
+    @Query('size') pageSize: number = 5,
+  ) {
+    return this.episodesService.getEpisodesBySeason(season, page, pageSize);
   }
 
   // @Get()
