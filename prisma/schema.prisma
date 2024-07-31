@@ -17,9 +17,25 @@ datasource db {
 //Tabla para personajes
 
 model Character {
-  id      Int    @id @default(autoincrement())
-  name    String
-  status  String
-  species String
-  gender  String
+  id       Int       @id @default(autoincrement())
+  name     String
+  status   String
+  species  String
+  gender   String
+  type     String?
+  episodes Episode[] @relation("CharacterEpisodes")
+
+  @@unique([name, species, status, type])
+}
+
+model Episode {
+  id            Int         @id @default(autoincrement())
+  name          String
+  air_date      String
+  episode       String
+  characters    Character[] @relation("CharacterEpisodes")
+  season        Int // Campo donde se almacena temporada
+  episodeNumber Int? //Campo para almacenar numero de episodio 
+
+  @@unique([name, season, episodeNumber]) // Garantiza que el nombre sea unico dentro de la misma temporada
 }
