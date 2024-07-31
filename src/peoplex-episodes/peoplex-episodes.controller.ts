@@ -1,11 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PeoplexEpisodesService } from './peoplex-episodes.service';
 import { CreatePeoplexEpisodeDto } from './dto/create-peoplex-episode.dto';
 import { UpdatePeoplexEpisodeDto } from './dto/update-peoplex-episode.dto';
+import { GetPeoplexEpisodesDto } from './dto/get-peoplex-episode.dto';
 
 @Controller('peoplex-episodes')
 export class PeoplexEpisodesController {
-  constructor(private readonly peoplexEpisodesService: PeoplexEpisodesService) {}
+  constructor(
+    private readonly peoplexEpisodesService: PeoplexEpisodesService,
+  ) {}
 
   @Post()
   create(@Body() createPeoplexEpisodeDto: CreatePeoplexEpisodeDto) {
@@ -13,8 +25,8 @@ export class PeoplexEpisodesController {
   }
 
   @Get()
-  findAll() {
-    return this.peoplexEpisodesService.findAll();
+  findAll(@Query() query: GetPeoplexEpisodesDto) {
+    return this.peoplexEpisodesService.findAll(query);
   }
 
   @Get(':id')
@@ -23,7 +35,10 @@ export class PeoplexEpisodesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePeoplexEpisodeDto: UpdatePeoplexEpisodeDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePeoplexEpisodeDto: UpdatePeoplexEpisodeDto,
+  ) {
     return this.peoplexEpisodesService.update(+id, updatePeoplexEpisodeDto);
   }
 
