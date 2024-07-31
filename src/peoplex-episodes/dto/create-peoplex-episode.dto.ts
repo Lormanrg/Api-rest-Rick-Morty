@@ -1,7 +1,7 @@
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreatePeoplexEpisodeDto {
-  @IsString()
+  @IsInt()
   characterId: number;
 
   @IsInt()

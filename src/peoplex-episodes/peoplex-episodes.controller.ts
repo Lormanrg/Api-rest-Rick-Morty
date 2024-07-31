@@ -25,8 +25,10 @@ export class PeoplexEpisodesController {
   }
 
   @Get()
-  findAll(@Query() query: GetPeoplexEpisodesDto) {
-    return this.peoplexEpisodesService.findAll(query);
+  async findAll(@Query() query: GetPeoplexEpisodesDto) {
+    console.log('Ingresa aca');
+    const result = await this.peoplexEpisodesService.findAll(query);
+    return result;
   }
 
   @Get(':id')

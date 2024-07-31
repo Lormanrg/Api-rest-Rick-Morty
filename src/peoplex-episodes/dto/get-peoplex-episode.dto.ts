@@ -10,14 +10,14 @@ export class GetPeoplexEpisodesDto {
   episodeStatus?: boolean;
 
   @IsOptional()
-  @IsInt()
+  @IsString()
   season?: number;
 
   @IsOptional()
-  @IsInt()
+  @IsString()
   page: number = 1;
 
   @IsOptional()
-  @IsInt()
+  @IsString()
   pageSize: number = 5;
 }

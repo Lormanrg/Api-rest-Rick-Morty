@@ -53,14 +53,14 @@ export class PeoplexEpisodesService {
       page = 1,
       pageSize = 5,
     } = query;
+    // Convierte el valor de season, page y page,Size a un número entero si está definido
+    const parsedSeason =
+      season !== undefined ? parseInt(season as any, 10) : undefined;
+    const parsedPage = parseInt(page as any, 10) || 1;
+    const parsedPageSize = parseInt(pageSize as any, 10) || 5;
 
-    console.log('Parsed query parameters:', {
-      characterStatus,
-      episodeStatus,
-      season,
-      page,
-      pageSize,
-    });
+    const skip = (page - 1) * pageSize;
+    const take = parsedPageSize;
 
     const where = {
       ...(characterStatus && {
@@ -75,17 +75,10 @@ export class PeoplexEpisodesService {
       }),
       ...(season && {
         episode: {
-          season: season,
+          season: parsedSeason,
         },
       }),
     };
-
-    console.log('Where clause for query:', where);
-
-    const skip = (Number(page) - 1) * Number(pageSize);
-    const take = Number(pageSize);
-
-    console.log('Pagination parameters - skip:', skip, 'take:', take);
 
     const [totalCount, participations] = await Promise.all([
       this.prisma.characterParticipation.count({
@@ -101,17 +94,12 @@ export class PeoplexEpisodesService {
         },
       }),
     ]);
-    console.log(
-      'Query results - totalCount:',
-      totalCount,
-      'participations:',
-      participations,
-    );
+
     return {
       totalCount,
       participations,
-      page,
-      pageSize,
+      page: parsedPage,
+      pageSize: parsedPageSize,
     };
   }
 
