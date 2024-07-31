@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePeoplexEpisodeDto } from './dto/create-peoplex-episode.dto';
 import { UpdatePeoplexEpisodeDto } from './dto/update-peoplex-episode.dto';
 import { Prisma } from '@prisma/client';
@@ -103,12 +103,62 @@ export class PeoplexEpisodesService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} peoplexEpisode`;
-  }
+  async update(id: number, updatePeoplexEpisodeDto: UpdatePeoplexEpisodeDto) {
+    const { characterId, episodeId, timeSlot, description, participationTime } =
+      updatePeoplexEpisodeDto;
 
-  update(id: number, updatePeoplexEpisodeDto: UpdatePeoplexEpisodeDto) {
-    return `This action updates a #${id} peoplexEpisode`;
+    // const parsedCharacterId = Number(characterId);
+    // const parsedEpisodeId = Number(episodeId);
+
+    // if (isNaN(parsedCharacterId) || isNaN(parsedEpisodeId)) {
+    //   throw new Error('Invalid ID format');
+    // }
+
+    // Verificar si existe una participación con el ID especificado
+    const existingParticipation =
+      await this.prisma.characterParticipation.findUnique({
+        where: { id: Number(id) },
+      });
+
+    if (!existingParticipation) {
+      throw new Error('Participacion no encontrada');
+    }
+
+    // Verificar si el nuevo tiempo de participación se solapa con otra participación
+
+    const overlappingParticipation =
+      await this.prisma.characterParticipation.findFirst({
+        where: {
+          AND: [
+            { id: { not: Number(id) } },
+            { characterId: Number(characterId) },
+            { episodeId: Number(episodeId) },
+            { timeSlot },
+          ],
+        },
+      });
+
+    if (overlappingParticipation) {
+      throw new Error(
+        'Personaje ya esta participando entre esta franja horaria del episodio ',
+      );
+    }
+    try {
+      return await this.prisma.characterParticipation.update({
+        where: { id: Number(id) }, // Asegúrate de convertir el id a número
+        data: {
+          characterId: Number(characterId), // Asegúrate de convertir characterId a número
+          episodeId: Number(episodeId), // Asegúrate de convertir episodeId a número
+          timeSlot,
+          description,
+          participationTime,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(
+        'An error occurred while updating participation',
+      );
+    }
   }
 
   remove(id: number) {
