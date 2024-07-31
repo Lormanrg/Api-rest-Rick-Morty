@@ -1,5 +1,5 @@
 
-![Diagrama de Modelo](Diagrama evaluacion-tecnica.drawio (1).png)
+![Diagrama de Modelo]([Diagrama evaluacion-tecnica.drawio (1).png](https://github.com/Lormanrg/evaluacion-tecnica-Rick-Morty/blob/main/Diagrama%20evaluacion-tecnica.drawio%20(1).png))
 
 
 
