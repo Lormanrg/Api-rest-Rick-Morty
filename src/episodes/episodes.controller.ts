@@ -43,6 +43,12 @@ export class EpisodesController {
       updateCharacterDto,
     );
   }
+
+  @Delete(':id')
+  async cancellingEpisode(@Param('id') id: string) {
+    return this.episodesService.cancel(Number(id));
+  }
+
   // @Get()
   // findAll() {
   //   return this.episodesService.findAll();

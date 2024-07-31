@@ -133,6 +133,26 @@ export class EpisodesService {
     } catch (error) {}
   }
 
+  async cancel(id: number) {
+    try {
+      const existingEpisode = await this.prisma.episode.findUnique({
+        where: { id },
+      });
+      if (!existingEpisode) {
+        throw new NotFoundException(`Episodio con ID ${id} no fue encontrado`);
+      }
+
+      return await this.prisma.episode.update({
+        where: { id },
+        data: {
+          canceled: true,
+        },
+      });
+    } catch (error) {
+      throw new Error(`Error cancelando episodio:${error.message}`);
+    }
+  }
+
   // findAll() {
   //   return `This action returns all episodes`;
   // }

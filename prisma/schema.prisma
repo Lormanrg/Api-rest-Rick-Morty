@@ -36,6 +36,7 @@ model Episode {
   characters    Character[] @relation("CharacterEpisodes")
   season        Int // Campo donde se almacena temporada
   episodeNumber Int? //Campo para almacenar numero de episodio 
+  canceled      Boolean     @default(false) //Campo para marcar episodios cancelados
 
   @@unique([name, season, episodeNumber]) // Garantiza que el nombre sea unico dentro de la misma temporada
 }
