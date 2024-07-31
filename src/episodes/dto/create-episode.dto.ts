@@ -2,7 +2,6 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -17,10 +16,11 @@ export class CreateEpisodeDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  characters: string[];
+  characters?: string[];
   @IsOptional()
   @IsInt()
   season: number;
   @IsNotEmpty()
-  episodeNumber: number;
+  @IsInt()
+  episodeNumber?: number;
 }

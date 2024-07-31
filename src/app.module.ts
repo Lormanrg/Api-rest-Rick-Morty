@@ -10,7 +10,6 @@ import { CharacterController } from './characters/characters.controller';
 import { PrismaService } from './prisma/prisma.service';
 import { RickMortyController } from './rick-morty/rick-morty.controller';
 import { EpisodesModule } from './episodes/episodes.module';
-
 import { EpisodesService } from './episodes/episodes.service';
 import { EpisodesController } from './episodes/episodes.controller';
 
