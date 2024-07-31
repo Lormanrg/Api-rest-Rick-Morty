@@ -8,6 +8,7 @@ import { GetPeoplexEpisodesDto } from './dto/get-peoplex-episode.dto';
 @Injectable()
 export class PeoplexEpisodesService {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(createPeoplexEpisodeDto: CreatePeoplexEpisodeDto) {
     const { characterId, episodeId, timeSlot, description, participationTime } =
       createPeoplexEpisodeDto;
@@ -53,6 +54,7 @@ export class PeoplexEpisodesService {
       page = 1,
       pageSize = 5,
     } = query;
+
     // Convierte el valor de season, page y page,Size a un número entero si está definido
     const parsedSeason =
       season !== undefined ? parseInt(season as any, 10) : undefined;
@@ -107,13 +109,6 @@ export class PeoplexEpisodesService {
     const { characterId, episodeId, timeSlot, description, participationTime } =
       updatePeoplexEpisodeDto;
 
-    // const parsedCharacterId = Number(characterId);
-    // const parsedEpisodeId = Number(episodeId);
-
-    // if (isNaN(parsedCharacterId) || isNaN(parsedEpisodeId)) {
-    //   throw new Error('Invalid ID format');
-    // }
-
     // Verificar si existe una participación con el ID especificado
     const existingParticipation =
       await this.prisma.characterParticipation.findUnique({
@@ -145,10 +140,10 @@ export class PeoplexEpisodesService {
     }
     try {
       return await this.prisma.characterParticipation.update({
-        where: { id: Number(id) }, // Asegúrate de convertir el id a número
+        where: { id: Number(id) },
         data: {
-          characterId: Number(characterId), // Asegúrate de convertir characterId a número
-          episodeId: Number(episodeId), // Asegúrate de convertir episodeId a número
+          characterId: Number(characterId),
+          episodeId: Number(episodeId),
           timeSlot,
           description,
           participationTime,
@@ -161,7 +156,21 @@ export class PeoplexEpisodesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} peoplexEpisode`;
+  async remove(id: string): Promise<{ message: string }> {
+    const parsedId = parseInt(id, 10);
+
+    const existingParticipation =
+      await this.prisma.characterParticipation.findUnique({
+        where: { id: parsedId },
+      });
+
+    if (!existingParticipation) {
+      throw Error('Participación no encontrada');
+    }
+
+    await this.prisma.characterParticipation.delete({
+      where: { id: parsedId },
+    });
+    return { message: 'Participación eliminada exitosamente' };
   }
 }
