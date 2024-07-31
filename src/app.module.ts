@@ -12,6 +12,9 @@ import { RickMortyController } from './rick-morty/rick-morty.controller';
 import { EpisodesModule } from './episodes/episodes.module';
 import { EpisodesService } from './episodes/episodes.service';
 import { EpisodesController } from './episodes/episodes.controller';
+import { PeoplexEpisodesModule } from './peoplex-episodes/peoplex-episodes.module';
+import { PeoplexEpisodesController } from './peoplex-episodes/peoplex-episodes.controller';
+import { PeoplexEpisodesService } from './peoplex-episodes/peoplex-episodes.service';
 
 @Module({
   imports: [
@@ -23,13 +26,20 @@ import { EpisodesController } from './episodes/episodes.controller';
     PrismaModule,
     HttpModule,
     EpisodesModule,
+    PeoplexEpisodesModule,
   ],
-  controllers: [CharacterController, RickMortyController, EpisodesController],
+  controllers: [
+    CharacterController,
+    RickMortyController,
+    EpisodesController,
+    PeoplexEpisodesController,
+  ],
   providers: [
     RickMortyService,
     PrismaService,
     CharactersService,
     EpisodesService,
+    PeoplexEpisodesService,
   ],
 })
 export class AppModule {}
